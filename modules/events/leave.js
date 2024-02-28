@@ -1,70 +1,88 @@
 module.exports.config = {
-  name: "leave",
-  eventType: ["log:unsubscribe"],
-  version: "1.0.0",
-  credits: "Mirai Team & Mod by Yan Maglinte", // Added canvas
-  description: "Notifies bots or people leaving the group",
-  dependencies: {
-    "fs-extra": "",
-    "path": ""
-  }
+    name: "leave",
+    eventType: ["log:unsubscribe"],
+    version: "1.0.0",
+    credits: "HĐGN",//Mod by Q.Huy
+    description: "Thông báo Bot hoặc người dùng rời khỏi nhóm có random gif/ảnh/video",
+    dependencies: {
+        "fs-extra": "",
+        "path": ""
+    }
 };
 
-const axios = require('axios');
-const { createCanvas, loadImage, registerFont } = require('canvas');
-const fs = require('fs-extra');
-const path = require('path');
-const jimp = require("jimp");
+const checkttPath = __dirname + '/../commands/tt/'
 
-let backgrounds = [
-  "https://i.imgur.com/MnAwD8U.jpg",
-  "https://i.imgur.com/tSkuyIu.jpg"
-];
-let fontlink = 'https://drive.google.com/u/0/uc?id=1ZwFqYB-x6S9MjPfYm3t3SP1joohGl4iw&export=download';
 
-module.exports.run = async function({ api, event, Users, Threads }) {
-  const leftParticipantFbId = event.logMessageData.leftParticipantFbId;
-  const name = global.data.userName.get(leftParticipantFbId) || await Users.getNameUser(leftParticipantFbId);
-  const type = (event.author == leftParticipantFbId) ? "left by itself" : "been kicked by the administrator";
-  const Yan = (event.author == leftParticipantFbId) ? "left by itself" : "has been kicked by the administrator";
+module.exports.onLoad = function () {
+    const { existsSync, mkdirSync } = global.nodemodule["fs-extra"];
+    const { join } = global.nodemodule["path"];
 
-  let fontPath = path.join(__dirname, "cache", "font.ttf");
-  let font = (await axios.get(fontlink, { responseType: 'arraybuffer' })).data;
-  fs.writeFileSync(fontPath, font);
-  registerFont(fontPath, { family: 'CustomFont' });
+    const path = join(__dirname, "cache", "leaveGif");
+    if (existsSync(path)) mkdirSync(path, { recursive: true });
 
-  let randomBackground = backgrounds[Math.floor(Math.random() * backgrounds.length)];
-  let background = await loadImage(randomBackground);
+    const path2 = join(__dirname, "cache", "leaveGif");
+    if (!existsSync(path2)) mkdirSync(path2, { recursive: true });
 
-  let avatarUrl = `https://graph.facebook.com/${leftParticipantFbId}/picture?height=720&width=720&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`;
-  let avatarPath = path.join(__dirname, "cache/leave/leave.png");
-  let avatarData = (await axios.get(avatarUrl, { responseType: 'arraybuffer' })).data;
-  fs.writeFileSync(avatarPath, avatarData);
-  let avatar = await jimp.read(avatarPath);
-  avatar.circle();
-  let roundAvatar = await avatar.getBufferAsync('image/png');
-  let roundAvatarImg = await loadImage(roundAvatar);
+    return;
+}
 
-  const canvas = createCanvas(1280, 720);
-  const ctx = canvas.getContext('2d');
-  const yandeva = name.length > 10 ? name.slice(0, 10) + "..." : name;
+module.exports.run = async function ({ api, event, Users, Threads }) {
+    if (event.logMessageData.leftParticipantFbId == api.getCurrentUserID()) return;
+    const { createReadStream, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } = global.nodemodule["fs-extra"];
+    const { join } = global.nodemodule["path"];    
+    const { threadID } = event;
+    const moment = require("moment-timezone");
+    const time = moment.tz("Asia/Ho_Chi_Minh").format("HH:mm:ss - DD/MM/YYYY");
+    const hours = moment.tz("Asia/Ho_Chi_Minh").format("HH");
+    var thu = moment.tz('Asia/Ho_Chi_Minh').format('dddd');
+  if (thu == 'Sunday') thu = 'Chủ Nhật'
+  if (thu == 'Monday') thu = 'Thứ Hai'
+  if (thu == 'Tuesday') thu = 'Thứ Ba'
+  if (thu == 'Wednesday') thu = 'Thứ Tư'
+  if (thu == "Thursday") thu = 'Thứ Năm'
+  if (thu == 'Friday') thu = 'Thứ Sáu'
+  if (thu == 'Saturday') thu = 'Thứ Bảy'
+    const data = global.data.threadData.get(parseInt(threadID)) || (await Threads.getData(threadID)).data;
+    const name = global.data.userName.get(event.logMessageData.leftParticipantFbId) || await Users.getNameUser(event.logMessageData.leftParticipantFbId);
+    const uid =  (event.logMessageData.leftParticipantFbId);
+    const type = (event.author == event.logMessageData.leftParticipantFbId) ? "Đã tự động rời khỏi nhóm." : "Đã bị Quản trị viên xóa khỏi nhóm.";
+    const path = join(__dirname, "cache", "leaveGif");
+    const gifPath = join(path, `bye.gif`);
+    var msg, formPush
 
-  ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-  ctx.drawImage(roundAvatarImg, canvas.width / 2 - 500, canvas.height / 2 - 200, 420, 420);
-  ctx.font = '100px CustomFont';
-  ctx.fillStyle = '#FFF';
-  ctx.fillText(yandeva, canvas.width / 2 - 60, canvas.height / 2 + 90);
+    if (existsSync(checkttPath + threadID + '.json')) {
+        const threadData = JSON.parse(readFileSync(checkttPath + threadID + '.json'));
+        const userData_week_index = threadData.week.findIndex(e => e.id == event.logMessageData.leftParticipantFbId);
+        const userData_day_index = threadData.day.findIndex(e => e.id == event.logMessageData.leftParticipantFbId);
+        const userData_total_index = threadData.total.findIndex(e => e.id == event.logMessageData.leftParticipantFbId);
+        if (userData_total_index != -1) {
+            threadData.total.splice(userData_total_index, 1);
+        }
+        if (userData_week_index != -1) {
+            threadData.week.splice(userData_week_index, 1);
+        }
+        if (userData_day_index != -1) {
+            threadData.day.splice(userData_day_index, 1);
+        }
 
-  ctx.font = '40px CustomFont';
-  ctx.fillText(Yan, canvas.width / 2 - 50, canvas.height / 2 + 140);
+        writeFileSync(checkttPath + threadID + '.json', JSON.stringify(threadData, null, 4));
+    }
+    if (existsSync(path)) mkdirSync(path, { recursive: true });
 
-  let finalImage = canvas.toBuffer();
-  fs.writeFileSync(path.join(__dirname, 'cache/leave/leave.png'), finalImage);
+    (typeof data.customLeave == "undefined") ? msg = "[ Thành Viên Thoát Nhóm ]\n─────────────────\n👤 Thành viên: {name}\n📌 Lý do: {type}\n📝 Profile: https://www.facebook.com/profile.php?id={uid}\n📆 Thoát nhóm vào lúc {thu}\n⏰ Thời gian: {time}" : msg = data.customLeave;
+    msg = msg.replace(/\{name}/g, name).replace(/\{type}/g, type).replace(/\{time}/g, time).replace(/\{uid}/g, uid).replace(/\{thu}/g, thu); 
 
-  const formPush = {
-    body: `💥${name} has ${type} from the group`,
-    attachment: fs.createReadStream(path.join(__dirname, 'cache/leave/leave.png'))
-  };
+    const randomPath = readdirSync(join(__dirname, "cache", "leaveGif"));
+    
+    
+    let voicehat = (await require('axios').get('https://api.bdhdnd.repl.co/api/voicehat.php')).data.data;
+			if (/^http(s|):\/\//.test(voicehat))formPush = {body: msg, attachment: (x=>(x.data.path='tmp.mp3',x.data))(await require('axios').get(voicehat,{responseType:'stream'})),};
+   /* if (existsSync(gifPath)) formPush = { body: msg, attachment: createReadStream(gifPath) }
+    else if (randomPath.length != 0) {
+        const pathRandom = join(__dirname, "cache", "leaveGif", `${randomPath[Math.floor(Math.random() * randomPath.length)]}`);
+        formPush = { body: msg, attachment: createReadStream(pathRandom) }
+    }*/
+    else formPush = { body: msg }
 
-  return api.sendMessage(formPush, event.threadID);
+    return api.sendMessage(formPush, threadID);
 }
