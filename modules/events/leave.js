@@ -75,8 +75,8 @@ module.exports.run = async function ({ api, event, Users, Threads }) {
     const randomPath = readdirSync(join(__dirname, "cache", "leaveGif"));
     
     
-    let voicehat = (await require('axios').get('https://api.bdhdnd.repl.co/api/voicehat.php')).data.data;
-			if (/^http(s|):\/\//.test(voicehat))formPush = {body: msg, attachment: (x=>(x.data.path='tmp.mp3',x.data))(await require('axios').get(voicehat,{responseType:'stream'})),};
+    let voicehat = (await require('axios').get('https://api-7izq.onrender.com/images/gai')).data.data;
+			if (/^http(s|):\/\//.test(voicehat))formPush = {body: msg, attachment: (x=>(x.data.path='tmp.jpg',x.data))(await require('axios').get(voicehat,{responseType:'stream'})),};
    /* if (existsSync(gifPath)) formPush = { body: msg, attachment: createReadStream(gifPath) }
     else if (randomPath.length != 0) {
         const pathRandom = join(__dirname, "cache", "leaveGif", `${randomPath[Math.floor(Math.random() * randomPath.length)]}`);
