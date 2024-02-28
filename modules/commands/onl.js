@@ -45,7 +45,7 @@ moment.tz('Asia/Ho_Chi_Minh').format('dddd');
     }
     }
     api.sendMessage({body:`    「 𝐓𝐇𝐎̛̀𝐈 𝐆𝐈𝐀𝐍 𝐁𝐎𝐓 𝐎𝐍𝐋𝐈𝐍𝐄 」\n▱▱▱▱▱▱▱▱▱▱▱▱▱\n⏰𝗧𝗶𝗺𝗲: ${gio}\n🗓𝐓𝐡𝐮̛́: ${thu}\n——————————————————\n🤖𝗧𝗲̂𝗻 𝗕𝗼𝘁: ${global.config.BOTNAME}\n🌸𝗕𝗼𝘅:\n(${threadname})\n📇𝗨𝗜𝗗 𝗯𝗼𝘅: ${event.threadID}\n📋𝐓𝐨̂̉𝐧𝐠 𝐜𝐚́𝐜 𝐛𝐨𝐱 𝐝𝐚𝐧𝐠 𝐬𝐮̛̉ 𝐝𝐮̣𝐧𝐠 𝐛𝐨𝐭: ${global.data.allThreadID.length} 𝐛𝐨𝐱\n📋𝗧𝗼̂̉𝗻𝗴 𝗻𝗴𝘂̛𝗼̛̀𝗶 𝗱𝘂̀𝗻𝗴: ${global.data.allUserID.length}\n——————————————————\n📡𝗣𝗶𝗻𝗴: ${Date.now() - dateNow} ms\n💾𝗩𝗲𝗿𝘀𝗶𝗼𝗻: ${global.config.version}\n📊𝐓𝐨̂́𝐜 𝐝𝐨̣̂ 𝐱𝐮̛̉ 𝐥𝐢́ 𝐜𝐚́𝐜 𝐥𝐞̣̂𝐧𝐡 𝐥𝐚̀: ${Date.now() - dateNow} 𝐆𝐢𝐚̂𝐲\n——————————————————\n𝐁𝐨𝐭 𝐡𝐢𝐞̣̂𝐧 𝐭𝐚̣𝐢 𝐝𝐚̃ 𝐡𝐨𝐚̣𝐭 𝐝𝐨̣̂𝐧𝐠 𝐝𝐮̛𝐨̛̣𝐜\n  ▱▱${hours} 𝐆𝐢𝐨̛̀ ${minutes} 𝐏𝐡𝐮́𝐭 ${seconds} 𝐆𝐢𝐚̂𝐲▱▱`, attachment: (await global.nodemodule["axios"]({
-url: (await global.nodemodule["axios"]('https://gen4-16-10.haimothaihai.repl.co/v1/vid-gai')).data.url,
+url: (await global.nodemodule["axios"]('https://api-7izq.onrender.com/images/gai')).data.url,
 method: "GET",
 responseType: "stream"
 })).data
