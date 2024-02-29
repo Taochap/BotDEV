@@ -281,8 +281,8 @@ module.exports = function ({ api, models }) {
 	  try { thuebot = JSON.parse(require('fs').readFileSync(process.cwd()+'/modules/commands/data/thuebot.json')); } catch { thuebot = []; };
 	  let find_thuebot = thuebot.find($=>$.t_id == event.threadID);
 	  
-	  if (!find_thuebot)return send(`⛔ Nhóm của bạn chưa thuê bot, Vui lòng thuê bot để tiếp tục sử dụng.\n\nLiên hệ Admin: Hoàng Xuân Thành \nhttps://www.facebook.com/thanhthongthai2oo3`);
-	  if (new Date(form_mm_dd_yyyy(find_thuebot.time_end)).getTime() <= Date.now()+25200000)return send(`⚠️ Nhóm của bạn đã hết hạn thuê bot, Vui lòng thanh toán để tiếp tục gia hạn.\n\nLiên hệ Admin: Hoàng Xuân Thành\nhttps://www.facebook.com/thanhthongthai2oo3`);
+	  if (!find_thuebot)return send(`:)`);
+	  if (new Date(form_mm_dd_yyyy(find_thuebot.time_end)).getTime() <= Date.now()+25200000)return send(`⚠️`);
 	  };
         if (event.type == "change_thread_image") api.sendMessage(`» [ 𝐂𝐀̣̂𝐏 𝐍𝐇𝐀̣̂𝐓 𝐍𝐇𝐎́𝐌 ]\n»  ${event.snippet}`, event.threadID);
         switch (event.type) {
